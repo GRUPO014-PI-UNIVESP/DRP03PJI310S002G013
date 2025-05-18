@@ -1,0 +1,48 @@
+
+IAM: gerenciando usuários, grupos de usuários, funções e políticas da AWS
+
+1. Criar um usuário
+
+	1.1 Definir um nome para o usuário => próximo
+	1.2 Adicionar o usuário a um grupo de usuários (ex: admins, desenvolvedores, programadores, etc)
+		Caso não haja um grupo, criar:	
+		1.2.1 Criar grupo de usuários
+		1.2.2 Definir um nome para o grupo de usuários (ex: admins)
+		1.2.3 Selecionar as políticas de permissões para o grupo => Criar grupo de usuários => próximo
+		1.2.4 Revisar e => Criar usuário
+		1.2.5 Posteriormente usuário deve habilitar MFA e pelo Painel principal, criar um Alias(pseudônimo para acesso) para a conta
+
+2. Criar uma instância EC2
+
+	2.1 Executar Instância
+		2.1.1 Definir um nome para a instância EC2 (ex: servidor-projeto_alfa-EC2)
+		2.1.2 Selecionar uma imagem (Amazon Linux ou Ubuntu)
+		2.1.3 Criar um para de chaves para a instância (ex: servidor-projeto_alfa-key)
+		2.1.4 Configurações de rede
+			2.1.4.1 Criar grupo de segurança
+			2.1.4.2 Permitir tráfego SSH e HTTP
+		2.1.5 Detalhes avançados
+			2.1.5.1 Dados do usuário (fim da página) escrever um script inicial
+
+
+				#!/bin/bash
+
+				yum update -y
+				yum install -y http
+				systemctl start httpd
+				systemctl enable httpd
+				echo "<h1>Mensagem qualquer $(hostname -f)</h1>" > /var/www/html/index.html
+
+		=> executar instância
+
+		comandos Amazon Linux 2023
+
+ls			- lista arquivos do diretório
+cd ..			- recua para diretório anterior
+cd <diretorio>		- avança para diretório
+sudo 			- comandos de administrador
+yum 			- gerenciador de pacotes
+mkdir			- cria diretorios
+rm <arquivo.xxx>	- remove arquivos para diretorios => rm -r <diretorio>
+
+

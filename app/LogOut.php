@@ -37,4 +37,4 @@
   session_destroy();
 
   // redireciona fluxo para index.php
-  header("Location: ../index.php");
+  header("Location: ./index.php");

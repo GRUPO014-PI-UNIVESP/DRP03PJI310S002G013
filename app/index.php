@@ -12,7 +12,7 @@
     date_default_timezone_set('America/Sao_Paulo');
       
   //Chama conexão com banco de dados que está em outro programa
-    include_once 'app/ConnectDB.php'; 
+    include_once './ConnectDB.php'; 
 ?>
 <!doctype html>
 <html lang="pt-br" data-bs-theme="dark">
@@ -70,7 +70,7 @@
 
               $_SESSION['idLogin'] = $tracking['ID_LOGIN'];
               //direciona fluxo
-              header("Location: app/Dashboard.php");
+              header("Location: ./Dashboard.php");
             }else{
 
               //mensagem de erro de entrada
