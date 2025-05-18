@@ -37,7 +37,8 @@
         <a style="margin-left: 080px;"                 href="<?php echo $acesso18 ?>">Relatório de Compras</a><br>
         <br>
         <a style="margin-left: 045px;color:aquamarine" href="">Desempenho</a><br>
-        <a style="margin-left: 080px;"                 href="MonitorProduto.php">Monitor da Execução dos Pedidos</a><br>
+        <a style="margin-left: 080px;"                 href="./MonitorProduto.php">Monitor da Execução dos Pedidos</a><br>
+        <a style="margin-left: 105px; color:burlywood" href="./Graficos.php">Gráficos</a><br>
         <a style="margin-left: 080px;"                 href="">Desempenho de Vendas</a><br>
         <a style="margin-left: 080px;"                 href="">Desempenho de Produtividade</a><br>
         <a style="margin-left: 080px;"                 href="./MonitorTempoProcesso.php">Histórico dos Pedidos</a><br>

@@ -46,3 +46,73 @@ mkdir			- cria diretorios
 rm <arquivo.xxx>	- remove arquivos para diretorios => rm -r <diretorio>
 
 
+Construir aplicativo com Code Deploy
+
+1. criar funções para EC2
+
+	Serviço da AWS => caso de uso => EC2 => próximo => politica de permissões => pesquisar S3 => selecionar AmazonS3ReadOnlyAccess => definir nome da função => criar 
+
+	Serviço da AWS => caso de uso => pesquisar Code Deploy => selecionar Code Deploy => próximo => próximo => definir nome da função => criar
+
+2. Executar instância EC2
+
+	definir nome da instância => selecionar imagem (ex: Ubuntu 22.04LTS) => criar grupo de segurança com SSH, HTTP e HTTPS => definir nome do grupo de segurança
+
+	Em detalhes avançados: selecionar perfil de instância IAM criado 
+
+	Dados do usuário: inserir script de inicialização:
+
+	#!/bin/bash
+
+	# Installing CodeDeploy Agent
+	sudo apt update -y
+	sudo apt install -y ruby-full wget
+	cd /home/ubuntu
+	wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+	sudo chmod +x ./install
+	sudo ./install auto > /tmp/logfile
+
+	Por fim => clicar executar instância
+
+3. Criar um Bucket na S3 (obs: nome aceita somente letras minúsculas)
+
+	definir um nome para o bucket => clicar criar bucket
+
+4. Code Deploy
+
+	criar aplicativo => definir um nome para o aplicativo e selecionar plataforma EC2/OnPremises => clicar criar aplicativo
+
+	criar grupo de implantação => selecionar a função de serviço CodeDeploy => no Local => ambiente => EC2
+
+	tags chave => Name; valor => nome da instância => agente do Code Deploy => nunca => configuração de implantação => AllAtOnce
+
+	desabilitar Load Balancer => clicar em criar grupo de implantação => clicar em criar implantação
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
