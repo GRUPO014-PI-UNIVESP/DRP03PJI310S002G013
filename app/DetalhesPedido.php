@@ -30,6 +30,7 @@
 </script>
 <div class="main"><br>
 <p style="font-size: 20px; color: whitesmoke">Relatório de Produção de Pedido</p>
+<button class="btn btn-primary" onclick="location.href='./MonitorProduto.php'">Voltar</button>
   <div class="row g-1">
     <div class="col-md-1">
         <label for="" class="form-label" style="font-size: 10px; color:aqua">Número do Pedido</label>
@@ -75,7 +76,7 @@
           <p><?php echo date('d/m/Y H:i', strtotime($rowHistorico['T_ENTREGA'])); ?></p>
         </div>
         <div class="col-md-2" style="font-size: 11px;">
-          <p style="text-align: center; border-bottom: solid 1px;">Tempo Acumulado</p><br>
+          <p style="text-align: center; border-bottom: solid 1px;">T.Acumulado</p><br>
           <p style="text-align: right;"><?php echo 'inicio'?></p>
           <p style="text-align: right;"><?php $soma = $rowHistorico['PEDIDO'] + $rowHistorico['COMPRA']; echo number_format($soma,0,',','.') . ' minutos' ?></p>
           <p style="text-align: right;"><?php $soma = $soma + $rowHistorico['RECEBIMENTO']             ; echo number_format($soma,0,',','.') . ' minutos' ?></p>
@@ -86,7 +87,7 @@
         </div>
         <div class="col-md-2" style="font-size: 11px;">
           <p style="text-align: center; border-bottom: solid 1px;">Tempo Base</p><br>
-          <p style="text-align: right;"><?php $soma = $rowBaseT['PEDIDO']                  ; echo number_format($soma,0,',','.') . ' minutos' ?></p>
+          <p style="text-align: right;"><?php $soma = 0                                    ; echo number_format($soma,0,',','.') . ' minutos' ?></p>
           <p style="text-align: right;"><?php $soma = $soma + $rowBaseT['COMPRA']          ; echo number_format($soma,0,',','.') . ' minutos' ?></p>
           <p style="text-align: right;"><?php $soma = $soma + $rowBaseT['RECEBIMENTO']     ; echo number_format($soma,0,',','.') . ' minutos' ?></p>
           <p style="text-align: right;"><?php $soma = $soma + $rowBaseT['ANALISE_MATERIAL']; echo number_format($soma,0,',','.') . ' minutos' ?></p>
@@ -107,7 +108,7 @@
       </div>
     </div>
     <div class="col-md-6">
-
+      Aqui vai um gráfico
     </div>
   </div>
 </div>
