@@ -134,12 +134,12 @@ include_once './ConnectDB.php'; include_once './EstruturaPrincipal.php'; $_SESSI
     </form> <?php
     $confirma = filter_input_array(INPUT_POST, FILTER_DEFAULT);
     if(!empty($confirma['confirma'])){      
-      $_SESSION['planta']     = $confirma['planta']; $_SESSION['colaborador'] = $confirma['colaborador'] ;
-      $_SESSION['horaInicio'] = $confirma['inicio']; $_SESSION['idProd']      = $rowProduto['ID_PRODUTO'];
-      $_SESSION['horaFinali'] = $confirma['fim']   ; $_SESSION['dataFabri']   = $confirma['dataFabri']   ;      
-      $_SESSION['idPedido']   = $idPedido          ; $_SESSION['qtdeReal']    = $confirma['qtdeReal']    ;      
-      $_SESSION['nlpSeq']     = $seqAtual          ; $_SESSION['nLoteProd']   = $confirma['nLotePF']     ;
-      $_SESSION['nlpMes']     = $mesAtual          ; $_SESSION['nlpAno']      = $anoAtual                ;
+      $_SESSION['planta']     = $confirma['planta']; $_SESSION['colaborador'] = $confirma['colaborador'];
+      $_SESSION['horaInicio'] = $confirma['inicio']; $_SESSION['idProd']      = $rowProduto['N_PRODUTO'];
+      $_SESSION['horaFinali'] = $confirma['fim']   ; $_SESSION['dataFabri']   = $confirma['dataFabri']  ;      
+      $_SESSION['idPedido']   = $idPedido          ; $_SESSION['qtdeReal']    = $confirma['qtdeReal']   ;      
+      $_SESSION['nlpSeq']     = $seqAtual          ; $_SESSION['nLoteProd']   = $confirma['nLotePF']    ;
+      $_SESSION['nlpMes']     = $mesAtual          ; $_SESSION['nlpAno']      = $anoAtual               ;
       
       header('Location: ./38ProcessaPedido.php');
     } ?>

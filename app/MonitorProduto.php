@@ -80,7 +80,7 @@ $responsavel = $_SESSION['nome_func'];
           if($rowTempo['ETAPA_PROCESS'] == 2){ $a = $clear1; $b = $clear2; $c = $exec  ; $d = $wait  ; $e = $wait  ; $f = $wait  ; } 
           if($rowTempo['ETAPA_PROCESS'] == 3){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $exec  ; $e = $wait  ; $f = $wait  ; }
           if($rowTempo['ETAPA_PROCESS'] == 4){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $clear4; $e = $exec  ; $f = $wait  ; }
-          if($rowTempo['ETAPA_PROCESS'] == 5){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $clear4; $e = $clear5; $f = $wait  ; }
+          if($rowTempo['ETAPA_PROCESS'] == 5){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $clear4; $e = $clear5; $f = $exec  ; }
           if($rowTempo['ETAPA_PROCESS'] == 6){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $clear4; $e = $clear5; $f = $clear6; }?>
           <tr>
             <td scope="col" style="width: 5%; text-align:right;"><?php
@@ -111,8 +111,7 @@ $responsavel = $_SESSION['nome_func'];
             </td>
             <td scope="col" style="width: 10%;">
               <br>
-              <input type="text" class="btn btn-outline-primary" style="width:90px;"
-                value="Verificar">
+              <button class="btn btn-outline-primary" onclick="location.href='./DetalhesPedido.php?id=<?php echo $rowPedido['NUMERO_PEDIDO'] ?>'">Detalhes</button>
             </td>
           </tr><?php
         } ?>                    

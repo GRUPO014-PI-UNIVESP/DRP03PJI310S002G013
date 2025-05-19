@@ -16,12 +16,28 @@ $nPedido = '';
         <input style="font-weight: bold; font-size: 18px; background: rgba(0,0,0,0.3); text-align: center; width: 160px;" 
                type="number" class="form-control" id="nPedido" name="nPedido" value="" onclick="submeterFormulario()" required autofocus>
       </div>
-    </div>   
+    </div><br><br>   
   </form><?php
-  if(isset($_POST['nPedido'])){
-    $_SESSION['nPedido'] = $_POST['nPedido'];
-    header('Location: ./AdicionaisProducao2.php');
-  } ?>
+  try{
+    $connDB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    if(isset($_POST['nPedido'])){
+      $_SESSION['nPedido'] = $_POST['nPedido'];
+      $sql0 = $connDB->prepare("SELECT NUMERO_PEDIDO FROM pedidos WHERE NUMERO_PEDIDO = :numPedido");
+      $sql0->bindParam(':numPedido', $_SESSION['nPedido'], PDO::PARAM_INT); $sql0->execute();
+      $rowPedido = $sql0->fetch(PDO::FETCH_ASSOC); $contador =  $sql0->rowCount();
+      if($contador > 0){
+        header('Location: ./AdicionaisProducao2.php');
+      } else { ?><button class="btn btn-warning" onclick="location.href='./AdicionaisProducao.php'">Número de Pedido inexistente! Clique e tente novamente.</button> <?php }
+    }
+  }
+  catch(PDOException $e){
+    echo 'Ocorreu algum problema durante a criação da tabela, comunique o responsável do TI.' . $e; ?>
+    <div>
+      <br><br>
+      <button class="btn btn-danger" onclick="location.href='./ConfigurarEstrutura.php'">Reiniciar</button>
+    </div><?php
+  }
+?>
 </div>
 <script>
   // verifica inatividade da página e fecha sessão
