@@ -81,20 +81,21 @@ $responsavel = $_SESSION['nome_func'];
           if($rowTempo['ETAPA_PROCESS'] == 3){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $exec  ; $e = $wait  ; $f = $wait  ; }
           if($rowTempo['ETAPA_PROCESS'] == 4){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $clear4; $e = $exec  ; $f = $wait  ; }
           if($rowTempo['ETAPA_PROCESS'] == 5){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $clear4; $e = $clear5; $f = $exec  ; }
-          if($rowTempo['ETAPA_PROCESS'] == 6){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $clear4; $e = $clear5; $f = $clear6; }?>
+          if($rowTempo['ETAPA_PROCESS'] == 6){ $a = $clear1; $b = $clear2; $c = $clear3; $d = $clear4; $e = $clear5; $f = $clear6; } ?>
           <tr>
             <td scope="col" style="width: 5%; text-align:right;"><?php
             $buscaPedido = $connDB->prepare("SELECT * FROM pedidos WHERE NUMERO_PEDIDO = :numPedido");
             $buscaPedido->bindParam(':numPedido', $rowTempo['NUMERO_PEDIDO'], PDO::PARAM_INT);
             $buscaPedido->execute(); $rowPedido = $buscaPedido->fetch(PDO::FETCH_ASSOC);
   
+            echo '<br>' . date('d/m/Y', strtotime($rowTempo['INICIO'])) . '<br>' . $rowPedido['NUMERO_PEDIDO'] ; ?></td>
 
-              echo '<br>' . date('d/m/Y', strtotime($rowTempo['INICIO'])) . 
-              '<br>' . $rowPedido['NUMERO_PEDIDO'] ; ?></td>
             <td scope="col" style="width: 20%;                  "><?php echo '<br>' . $rowPedido['PRODUTO']     . '<br>' . $rowPedido['CLIENTE']; ?></td>
+
             <td scope="col" style="width: 5%; text-align:right;"><?php 
               echo '<br>' . number_format($rowPedido['QTDE_PEDIDO'],0,',','.') . ' '    . $rowPedido['UNIDADE'] . 
               '<br>' . date('d/m/Y',strtotime($rowPedido['DATA_ENTREGA'])); ?></td>
+
             <td scope="col" style="width: 60%;">
               <div class="row g-2">
                 <div class="col md-6" style="font-size: 11px; color:aqua;">Matéria Prima</div>
@@ -109,6 +110,7 @@ $responsavel = $_SESSION['nome_func'];
                 <div class="col md-2" style="<?php echo $f ?>;border: 1px solid white;"><?php echo 'ENTREGA'    . '<br>' . 'Logística' ?></div>
               </div>
             </td>
+            
             <td scope="col" style="width: 10%;">
               <br>
               <button class="btn btn-outline-primary" onclick="location.href='./DetalhesPedido.php?id=<?php echo $rowPedido['NUMERO_PEDIDO'] ?>'">Detalhes</button>
