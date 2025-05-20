@@ -1,20 +1,9 @@
 <?php
   // faz requisição da estrutura base da págima do sistema
   include_once './EstruturaPrincipal.php'; include_once './ConnectDB.php'; $_SESSION['posicao'] = 'Detalhes do Pedido'; include_once './RastreadorAtividades.php';
-
+  $sql0 = $connDB->prepare("SELECT PRODUTO, SUM(QTDE_PEDIDO) AS TOTAL FROM pedidos GROUP BY PRODUTO");
+  $sql0->execute();
 ?>
-<!-- Carregar a API do google -->
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<!-- Preparar a geracao do grafico -->
-<script type="text/javascript">
-  // Carregar a API de visualizacao e os pacotes necessarios.
-  google.load('visualization', '1.0', {'packages':['corechart']});
-  // Especificar um callback para ser executado quando a API for carregada.
-  google.setOnLoadCallback(desenharGrafico);
-/*
-* Funcao que preenche os dados do grafico
-*/
-</script>
 <script>
   // verifica inatividade da página e fecha sessão
   let inactivityTime = function () {
@@ -23,35 +12,51 @@
     function resetTimer() { clearTimeout(time); time = setTimeout(deslogar, 69900000); }
   }; inactivityTime();
 </script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load("current", {packages:['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data1 = google.visualization.arrayToDataTable([
+      ["PRODUTO", "QUANTIDADE", { role: "style" } ], <?php
+      while($row = $sql0->fetch(PDO::FETCH_ASSOC)){ ?>
+        ['<?php echo $row['PRODUTO'] ?>', <?php echo $row['TOTAL'] ?>, 'red' ], <?php  
+      } ?>
+    ]);
+
+    var view1 = new google.visualization.DataView(data1);
+    view1.setColumns([0, 1,
+      { calc: "stringify",
+        sourceColumn: 1,
+        type: "string",
+        role: "annotation" }, 2
+    ]);
+
+
+    var options1 = {
+      title: "Vendas",
+      width: 600,
+      height: 400,
+      bar: {groupWidth: "95%"},
+      legend: { position: "none" },
+    };
+ 
+    var chart = new google.visualization.PieChart(document.getElementById("columnchart1_values"));
+      chart.draw(view1, options1);
+  }
+</script>
 <div class="main"><br>
   <p style="font-size: 20px; color: whitesmoke">Desempenho das Vendas</p><br>
-  <?php
-    $sql0 = $connDB->prepare("SELECT PRODUTO, SUM(QTDE_PEDIDO) AS TOTAL FROM pedidos GROUP BY PRODUTO");
-    $sql0->execute(); 
-    while($rowTotal = $sql0->fetch(PDO::FETCH_ASSOC)){
-      echo $rowTotal['PRODUTO'] . ' => ' . $rowTotal['TOTAL'] . '<br>'; ?>
-      <script>
-        function desenharGrafico() {
-          // Montar os dados usados pelo grafico
-          var dados = new google.visualization.DataTable();
-          dados.addColumn('string', 'Gênero');
-          dados.addColumn('number', 'Quantidades');
-          dados.addRows([[<?php echo $rowTotal['PRODUTO'] ?>, <?php $rowTotal['TOTAL'] ?>]]);
+  <div class="row g-2">
+    <div class="col-md-6">
+      <div id="columnchart1_values" style="width: 800px; height: 300px;"></div>
+    </div>
+    <div class="col-md-6">
 
-          // Configuracoes do grafico
-          var config = {'title':'Vendas por Produto','width':800,'height':600};
+    </div> 
 
-          // Instanciar o objeto de geracao de graficos de pizza,
-          // informando o elemento HTML onde o grafico sera desenhado.
-          var chart = new google.visualization.PieChart(document.getElementById('area_grafico'));
+  </div>
 
-          // Desenhar o grafico (usando os dados e as configuracoes criadas)
-          chart.draw(dados, config);
-        }
-      </script><?php
-    }
-  ?>
-  <div id="area_grafico"></div>
 </div>
 
 
