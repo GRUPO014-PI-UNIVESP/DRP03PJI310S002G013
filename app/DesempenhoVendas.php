@@ -25,24 +25,11 @@
     ]);
 
     var view1 = new google.visualization.DataView(data1);
-    view1.setColumns([0, 1,
-      { calc: "stringify",
-        sourceColumn: 1,
-        type: "string",
-        role: "annotation" }, 2
-    ]);
+    view1.setColumns([0, 1, { calc: "stringify", sourceColumn: 1, type: "string", role: "annotation" }, 2 ]);
 
-
-    var options1 = {
-      title: "Vendas",
-      width: 600,
-      height: 400,
-      bar: {groupWidth: "95%"},
-      legend: { position: "none" },
-    };
- 
+    var options1 = { title: "Vendas", width: 600, height: 400, bar: {groupWidth: "95%"}, legend: { position: "none" }, };
     var chart = new google.visualization.PieChart(document.getElementById("columnchart1_values"));
-      chart.draw(view1, options1);
+    chart.draw(view1, options1);
   }
 </script>
 <div class="main"><br>
