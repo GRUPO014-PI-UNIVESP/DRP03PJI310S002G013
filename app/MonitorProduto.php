@@ -86,11 +86,10 @@ $responsavel = $_SESSION['nome_func'];
             <td scope="col" style="width: 5%; text-align:right;"><?php
             $buscaPedido = $connDB->prepare("SELECT * FROM pedidos WHERE NUMERO_PEDIDO = :numPedido");
             $buscaPedido->bindParam(':numPedido', $rowTempo['NUMERO_PEDIDO'], PDO::PARAM_INT);
-            $buscaPedido->execute(); $rowPedido = $buscaPedido->fetch(PDO::FETCH_ASSOC);
-  
+            $buscaPedido->execute(); $rowPedido = $buscaPedido->fetch(PDO::FETCH_ASSOC); 
             echo '<br>' . date('d/m/Y', strtotime($rowTempo['INICIO'])) . '<br>' . $rowPedido['NUMERO_PEDIDO'] ; ?></td>
 
-            <td scope="col" style="width: 20%;                  "><?php echo '<br>' . $rowPedido['PRODUTO']     . '<br>' . $rowPedido['CLIENTE']; ?></td>
+            <td scope="col" style="width: 20%;"><?php echo '<br>' . $rowPedido['PRODUTO'] . '<br>' . $rowPedido['CLIENTE']; ?></td>
 
             <td scope="col" style="width: 5%; text-align:right;"><?php 
               echo '<br>' . number_format($rowPedido['QTDE_PEDIDO'],0,',','.') . ' '    . $rowPedido['UNIDADE'] . 
@@ -112,8 +111,8 @@ $responsavel = $_SESSION['nome_func'];
             </td>
             
             <td scope="col" style="width: 10%;">
-              <br>
-              <button class="btn btn-outline-primary" onclick="location.href='./DetalhesPedido.php?id=<?php echo $rowPedido['NUMERO_PEDIDO'] ?>'">Detalhes</button>
+              <br><?php if($rowPedido['ETAPA_PROCESS'] >= 6){ $desabilita = 'enabled';} else { $desabilita = 'disabled';}  ?>
+              <button class="btn btn-outline-primary" onclick="location.href='./DetalhesPedido.php?id=<?php echo $rowPedido['NUMERO_PEDIDO'] ?>'" <?php echo $desabilita ?>>Detalhes</button>
             </td>
           </tr><?php
         } ?>                    
