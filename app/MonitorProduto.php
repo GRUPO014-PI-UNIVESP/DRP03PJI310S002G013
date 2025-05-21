@@ -39,7 +39,7 @@ $responsavel = $_SESSION['nome_func'];
           <th scope="col" style="width: 10%; text-align: center">Detalhes</th>
         </tr>
       </thead>
-      <?php $buscaLinhaTempo = $connDB->prepare("SELECT * FROM historico_tempo WHERE ETAPA_PROCESS < 7 AND NUMERO_PEDIDO > 0"); $buscaLinhaTempo->execute(); ?>
+      <?php $buscaLinhaTempo = $connDB->prepare("SELECT * FROM historico_tempo WHERE ETAPA_PROCESS < 7 AND NUMERO_PEDIDO > 0 ORDER BY NUMERO_PEDIDO DESC"); $buscaLinhaTempo->execute(); ?>
       <tbody style="height: 75%; font-size: 11px;"><?php $clear1 = ''; $clear2 = ''; $clear3 = ''; $clear4 = ''; $clear5 = ''; $clear6 = ''; 
         while($rowTempo = $buscaLinhaTempo->fetch(PDO::FETCH_ASSOC)){
 

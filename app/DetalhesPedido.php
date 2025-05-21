@@ -2,24 +2,26 @@
   // faz requisição da estrutura base da págima do sistema
   include_once './EstruturaPrincipal.php'; $_SESSION['posicao'] = 'Detalhes do Pedido'; include_once './RastreadorAtividades.php';
   //verifica o numero de pedido selecionado para mostrar detalhes
-  if(!empty($_GET['id'])){ $id = $_GET['id'];
-    $pedi = array(); $comp = array(); $rece = array(); $anaM = array(); $fabr = array(); $anaP = array(); $entr = array(); $tota = array();
+  if(!empty($_GET['id'])){ $id = $_GET['id']; $pedi = array(); $comp = array(); $rece = array(); $anaM = array(); $fabr = array(); $anaP = array(); $entr = array(); $tota = array();
+    $sql0 = $connDB->prepare("SELECT * FROM pedidos WHERE NUMERO_PEDIDO = :numPedido"); $sql0->bindParam(':numPedido', $id, PDO::PARAM_INT); $sql0->execute(); $rowPedido = $sql0->fetch(PDO::FETCH_ASSOC); $baseFabr = (($rowPedido['QTDE_PEDIDO'] / $rowPedido['CAPAC_PROCESS']) * 60);
+    $sql1 = $connDB->prepare("SELECT * FROM historico_tempo WHERE NUMERO_PEDIDO = :numPedido"); $sql1->bindParam(':numPedido', $id, PDO::PARAM_INT); $sql1->execute(); $rowHistorico = $sql1->fetch(PDO::FETCH_ASSOC);
+    $sql2 = $connDB->prepare("SELECT * FROM historico_tempo WHERE NUMERO_PEDIDO = 0 AND ID_PRODUTO = :nProd"); $sql2->bindParam(':nProd', $rowPedido['N_PRODUTO'], PDO::PARAM_INT); $sql2->execute(); $rowBaseT = $sql2->fetch(PDO::FETCH_ASSOC);
+    $sql3 = $connDB->prepare("SELECT CAPAC_PROCESS FROM produtos WHERE N_PRODUTO = :nProd"); $sql3->bindParam(':nProd', $rowPedido['N_PRODUTO'], PDO::PARAM_INT); $sql3->execute(); $rowProduto = $sql3->fetch(PDO::FETCH_ASSOC);
+    $col1 =0; $exc1 = 0;
+    $col2 = $rowBaseT['COMPRA'] / 60          ; $exc2 = ($rowHistorico['COMPRA']           - $rowBaseT['COMPRA']) / 60          ; if($exc2 <= 0){$exc2 = 0;}
+    $col3 = $rowBaseT['RECEBIMENTO'] / 60     ; $exc3 = ($rowHistorico['RECEBIMENTO']      - $rowBaseT['RECEBIMENTO']) / 60     ; if($exc3 <= 0){$exc3 = 0;} 
+    $col4 = $rowBaseT['ANALISE_MATERIAL'] / 60; $exc4 = ($rowHistorico['ANALISE_MATERIAL'] - $rowBaseT['ANALISE_MATERIAL']) / 60; if($exc4 <= 0){$exc4 = 0;} 
+    $col5 = $baseFabr / 60                    ; $exc5 = ($rowHistorico['FABRICACAO']       - $baseFabr) / 60                    ; if($exc5 <= 0){$exc5 = 0;}
+    $col6 = $rowBaseT['ANALISE_PRODUTO'] / 60 ; $exc6 = ($rowHistorico['ANALISE_PRODUTO']  - $rowBaseT['ANALISE_PRODUTO']) / 60 ; if($exc6 <= 0){$exc6 = 0;}
+    $col7 = $rowBaseT['ENTREGA'] / 60         ; $exc7 = ($rowHistorico['ENTREGA']          - $rowBaseT['ENTREGA']) / 60         ; if($exc7 <= 0){$exc7 = 0;}
 
-    $sql0 = $connDB->prepare("SELECT * FROM pedidos WHERE NUMERO_PEDIDO = :numPedido");
-    $sql0->bindParam(':numPedido', $id, PDO::PARAM_INT); $sql0->execute();
-    $rowPedido = $sql0->fetch(PDO::FETCH_ASSOC);
-
-    $sql1 = $connDB->prepare("SELECT * FROM historico_tempo WHERE NUMERO_PEDIDO = :numPedido");
-    $sql1->bindParam(':numPedido', $id, PDO::PARAM_INT); $sql1->execute();
-    $rowHistorico = $sql1->fetch(PDO::FETCH_ASSOC);
-
-    $sql2 = $connDB->prepare("SELECT * FROM historico_tempo WHERE NUMERO_PEDIDO = 0 AND ID_PRODUTO = :nProd");
-    $sql2->bindParam(':nProd', $rowPedido['N_PRODUTO'], PDO::PARAM_INT); $sql2->execute();
-    $rowBaseT = $sql2->fetch(PDO::FETCH_ASSOC);
-
-    $sql3 = $connDB->prepare("SELECT CAPAC_PROCESS FROM produtos WHERE N_PRODUTO = :nProd");
-    $sql3->bindParam(':nProd', $rowPedido['N_PRODUTO'], PDO::PARAM_INT); $sql3->execute();
-    $rowProduto = $sql3->fetch(PDO::FETCH_ASSOC);
+    $acu1 = 0; $exc11 = 0;
+    $acu2 = $acu1 + $rowBaseT['COMPRA']          ; $exc22 = $rowHistorico['COMPRA']           - $rowBaseT['COMPRA']          ; if($exc22 <= 0){$exc22 = 0;}
+    $acu3 = $acu2 + $rowBaseT['RECEBIMENTO']     ; $exc33 = $rowHistorico['RECEBIMENTO']      - $rowBaseT['RECEBIMENTO']     ; if($exc33 <= 0){$exc33 = 0;}
+    $acu4 = $acu3 + $rowBaseT['ANALISE_MATERIAL']; $exc44 = $rowHistorico['ANALISE_MATERIAL'] - $rowBaseT['ANALISE_MATERIAL']; if($exc44 <= 0){$exc44 = 0;}
+    $acu5 = $acu4 + $baseFabr                    ; $exc55 = $rowHistorico['FABRICACAO']       - $baseFabr                    ; if($exc55 <= 0){$exc55 = 0;}
+    $acu6 = $acu5 + $rowBaseT['ANALISE_PRODUTO'] ; $exc66 = $rowHistorico['ANALISE_PRODUTO']  - $rowBaseT['ANALISE_PRODUTO'] ; if($exc66 <= 0){$exc66 = 0;}
+    $acu7 = $acu6 + $rowBaseT['ENTREGA']         ; $exc77 = $rowHistorico['ENTREGA']          - $rowBaseT['ENTREGA']         ; if($exc77 <= 0){$exc77 = 0;}
   }
 ?>
 <script>
@@ -34,44 +36,44 @@
   <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ["Element", "Density", { role: "style" } ],
-        ["<?php echo  date('d/m/Y H:i',strtotime($rowHistorico['INICIO'])) ?>" ,
-          <?php echo $rowHistorico['PEDIDO'] ?>, "limegreen"],
-
-        ["<?php echo  date('d/m/Y H:i',strtotime($rowHistorico['T_COMPRA'])) ?>",
-          <?php echo $rowHistorico['COMPRA'] ?>, "limegreen"],
-
-        ["<?php echo  date('d/m/Y H:i',strtotime($rowHistorico['T_RECEBE'])) ?>",
-          <?php echo $rowHistorico['RECEBIMENTO'] ?>, "limegreen"],
-
-        ["<?php echo  date('d/m/Y H:i',strtotime($rowHistorico['T_ANAMAT'])) ?>",
-          <?php echo $rowHistorico['ANALISE_MATERIAL'] ?>, "limegreen"],
-
-        ["<?php echo  date('d/m/Y H:i',strtotime($rowHistorico['T_FABRI'])) ?>",
-          <?php echo $rowHistorico['FABRICACAO'] ?>, "limegreen"],
-
-        ["<?php echo  date('d/m/Y H:i',strtotime($rowHistorico['T_ANAPRO'])) ?>",
-          <?php echo $rowHistorico['ANALISE_PRODUTO'] ?>, "limegreen"],
-
-        ["<?php echo  date('d/m/Y H:i',strtotime($rowHistorico['T_ENTREGA'])) ?>",
-          <?php echo $rowHistorico['ENTREGA'] ?>, "limegreen"]
+    function drawChart(){
+      // primeiro gráfico com valores de cada processo
+      var data1 = google.visualization.arrayToDataTable([
+        ["Processo", "Custo em horas", "Tempo Excedente", { role: "style" }],
+        ['Início'                   , <?php echo $col1 ?>, <?php echo $exc1 ?>, ""],
+        ['Compra dos Materiais'     , <?php echo $col2 ?>, <?php echo $exc2 ?>, ""],
+        ['Recebimento dos Materiais', <?php echo $col3 ?>, <?php echo $exc3 ?>, ""],
+        ['Análise dos Materiais'    , <?php echo $col4 ?>, <?php echo $exc4 ?>, ""],
+        ['Fabricação do Produto'    , <?php echo $col5 ?>, <?php echo $exc5 ?>, ""],
+        ['Análise dos Produto'      , <?php echo $col6 ?>, <?php echo $exc6 ?>, ""],
+        ['Entrega do Produto'       , <?php echo $col7 ?>, <?php echo $exc7 ?>, ""]
       ]);
+      var view1 = new google.visualization.DataView(data1);
+      view1.setColumns([0, 1, { calc: "stringify", sourceColumn: 1, type: "string", role: "annotation" }, 2]);
+      var options1 = { title: "Histórico cronológico do pedido (Horas)", backgroundColor: 'slategray', width: 1180, height: 300, bar: {groupWidth: "98%"}, legend: {position: 'top'}, isStacked: true, colors: ['green', 'red'] };
+      var chart = new google.visualization.ColumnChart(document.getElementById("custoEtapa")); chart.draw(view1, options1);
 
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1, { calc: "stringify", sourceColumn: 1, type: "string", role: "annotation" }, 2]);
-
-      var options = { title: "Histórico cronológico do pedido", width: 1080, height: 200, bar: {groupWidth: "100%"}, legend: { position: "none" },
-      };
-      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
-      chart.draw(view, options);
-  }
+      // segundo grafico com valores acumulados
+      var data2 = google.visualization.arrayToDataTable([
+        ["Processo", "Custo em minutos", "Tempo Excedente", { role: "style" }],
+        ['Início'                   , <?php echo $acu1 ?>, <?php echo $exc11 ?>, ""],
+        ['Compra dos Materiais'     , <?php echo $acu2 ?>, <?php echo $exc22 ?>, ""],
+        ['Recebimento dos Materiais', <?php echo $acu3 ?>, <?php echo $exc33 ?>, ""],
+        ['Análise dos Materiais'    , <?php echo $acu4 ?>, <?php echo $exc44 ?>, ""],
+        ['Fabricação do Produto'    , <?php echo $acu5 ?>, <?php echo $exc55 ?>, ""],
+        ['Análise dos Produto'      , <?php echo $acu6 ?>, <?php echo $exc66 ?>, ""],
+        ['Entrega do Produto'       , <?php echo $acu7 ?>, <?php echo $exc77 ?>, ""]
+      ]);
+      var view2 = new google.visualization.DataView(data2);
+      view2.setColumns([0, 1, { calc: "stringify", sourceColumn: 1, type: "string", role: "annotation" }, 2]);
+      var options2 = { title: "Histórico cronológico do pedido (acumulado em Minutos)", backgroundColor: 'slategray', width: 1180, height: 300, bar: {groupWidth: "100%"}, legend: {position: 'top'}, isStacked: true, colors: ['green', 'red'] };
+      var chart = new google.visualization.ColumnChart(document.getElementById("acumulado")); chart.draw(view2, options2);
+    } 
   </script>
 <div class="main"><br>
   <div class="row g-2">
     <div class="col-md-6">
-      <p style="font-size: 20px; color: whitesmoke">Relatório de Produção de Pedido</p>
+      <p style="font-size: 20px; color:whitesmoke">Relatório de Produção de Pedido</p>
     </div>
     <div class="col-md-6">
       <button class="btn btn-primary" style="float:inline-end" onclick="location.href='./MonitorProduto.php'">Voltar para Monitor</button>
@@ -97,9 +99,6 @@
     </div>
   </div><br>
   <div class="row g-1">
-    <div class="col-md-12">
-      <div id="columnchart_values" style="width: 1200px; height: 200px;"></div>
-    </div>
     <div class="col-md-11" >
       <p style="color:bisque;">Histórico Cronológico do Pedido</p>
       <div class="tabela">
@@ -116,7 +115,7 @@
               <th scope="col" style="text-align: right">Entrega do Produto</th>
             </tr>
           </thead>
-          <tbody style="height: 75%; font-size: 12px;">
+          <tbody style="font-size: 12px;">
             <tr style="font-weight:bold; color:yellow">
               <td scope="col" style="text-align: right"><?php echo 'Data e Hora' . '<br>' . 'da Execução'; ?></td>
               <td scope="col" style="text-align: right"><?php echo date('d/m/Y', strtotime($rowHistorico['INICIO']))
@@ -302,6 +301,12 @@
           </tbody>
         </table>
       </div>
+    </div>
+    <div class="col-md-12"><br>
+      <div id="custoEtapa" style="width: 1100px; height: 300px;"></div>
+    </div>
+    <div class="col-md-12"><br>
+      <div id="acumulado" style="width: 1100px; height: 300px;"></div>
     </div>
   </div>
 </div>
